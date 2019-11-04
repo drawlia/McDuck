@@ -1,0 +1,169 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import pandas as pd
+
+
+# In[29]:
+
+
+import numpy as np
+
+
+# In[2]:
+
+
+df= pd.read_csv("SBIN.csv")
+
+
+# In[8]:
+
+
+df.info()
+
+
+# In[6]:
+
+
+df.Date.min(), df.Date.max()
+
+
+# In[11]:
+
+
+df['range'] = df['High'] - df['Low']
+df['range1'] = df['range'].shift(1)
+
+
+# In[13]:
+
+
+df['range2'] = df['range'].shift(2)
+df['range3'] = df['range'].shift(3)
+df['range4'] = df['range'].shift(4)
+df['range5'] = df['range'].shift(5)
+df['range6'] = df['range'].shift(6)
+df['range7'] = df['range'].shift(7)
+
+
+# In[15]:
+
+
+df.head(10)
+
+
+# In[32]:
+
+
+df = df.dropna().reset_index()
+
+
+# In[27]:
+
+
+df.head()
+
+
+# In[28]:
+
+
+df['High1'] = df['High'].shift(1)
+df['Low1'] = df['Low'].shift(1)
+
+
+# In[33]:
+
+
+df['inside_bar'] = np.where((df['High'] <= df['High1']) & (df['Low'] >= df['Low1']),"Yes","No")
+
+
+# In[35]:
+
+
+df.head()
+
+
+# In[36]:
+
+
+df['y_close_1'] = df['Close'].shift(-1)
+df['y_close_2'] = df['Close'].shift(-2)
+
+
+# In[37]:
+
+
+df['7rbar'] = np.where((df['range'] <= df['range1']) & (df['range'] <= df['range2']) & 
+                       (df['range'] <= df['range3']) & (df['range'] <= df['range4']) & 
+                       (df['range'] <= df['range5']) & (df['range'] <= df['range6']) & (df['range'] <= df['range7']), "Yes","No")
+
+
+# In[41]:
+
+
+df['inside_bar'].value_counts(), df['7rbar'].value_counts()
+
+
+# In[52]:
+
+
+df['Prev Close1'] = df['Prev Close'].shift(1)
+
+
+# In[76]:
+
+
+t = df[(df['inside_bar'] == "Yes") & (df['7rbar'] == "Yes")]
+
+
+# In[55]:
+
+
+t.columns
+
+
+# In[83]:
+
+
+cols = ['Date', 'Prev Close', 'Open',
+       'High', 'Low', 'Last', 'Close', 'High1', 'Low1', 'y_close_1', 'y_close_2','Prev Close1', 'inside_bar', '7rbar']
+
+
+# In[59]:
+
+
+t[cols].to_csv('sqbt_test1.csv')
+
+
+# In[68]:
+
+
+df[1168:1176].T
+
+
+# In[77]:
+
+
+ch = t.index.values
+
+
+# In[78]:
+
+
+df.head()
+
+
+# In[84]:
+
+
+df[cols].to_csv('sqbt1.csv')
+
+
+# In[ ]:
+
+
+
+
